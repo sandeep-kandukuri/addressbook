@@ -35,6 +35,11 @@ pipeline {
             
         }
         stage('DEPLOY') {
+            when {
+                expression {
+                    BRANCH_NAME == 'PROD'
+                }
+            }
             steps {
                 script {
                     echo "Deploying the Job"
