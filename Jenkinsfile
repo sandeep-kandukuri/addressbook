@@ -2,7 +2,7 @@ pipeline {
     agent any
     parameters {
         string(name:'ENV',defaultValue:'Test',description:'version to deploy')
-        booleanParams(name:'executeTests',defaultValue:true,description:'decide to rum tc')
+        booleanParam(name:'executeTests',defaultValue:true,description:'decide to rum tc')
         choice(name:'APPVERSION',choices:['1.1','1.2','1.3'])
 
     }
