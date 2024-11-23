@@ -16,7 +16,7 @@ pipeline {
                 message "select the version"
                 ok "Version selected"
                 parameters{
-                    choices(name:'Build Version',choice:['1.1','1.2','1.3'])
+                    choice(name:'Build Version',choices:['1.1','1.2','1.3'])
                 }
             }
             steps {
