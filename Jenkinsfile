@@ -1,58 +1,40 @@
 pipeline {
     agent any
-    parameters {
-        string(name:'ENV',defaultValue:'Test',description:'version to deploy')
-        booleanParam(name:'executeTests',defaultValue:true,description:'decide to rum tc')
-        choice(name:'APPVERSION',choices:['1.1','1.2','1.3'])
-
+    tools {
+        jdk 'myjava'
+        maven 'mymaven'
     }
-    environment {
-        NEW_Version = '2.1'
-    }
-
     stages {
-        stage('Build') {
-            input {
-                message "select the version"
-                ok "Version selected"
-                parameters{
-                    choice(name:'Build Version',choices:['1.1','1.2','1.3'])
-                }
-            }
+        stage('Compile') {
+            
             steps {
                 script {
-                    echo "Building the Job"
-                    echo "Build the app with ${NEW_Version}"
+                    echo "Compiling the Job"
+                    sh 'mvn compile'
                 }
                 
             }
 
             
         }
-        stage('TEST') {
-            when {
-                expression {
-                    params.executeTests == true
-                }
-                    
-            }
-            steps {
-                script {
-                    echo "UnitTesting the Job"
-                    
-                }
-                
-            }
-
-            
-        }
-        stage('DEPLOY') {
+        stage('UnitTEST') {
            
             steps {
                 script {
-                    echo "Deploying the Job"
-                    echo "Deploying to the environment:${params.ENV}"
-                    echo "Application version is: ${params.APPVERSION}"
+                    echo "UnitTesting the Job"
+                    sh 'mvn test'
+                }
+                
+            }
+
+            
+        }
+        stage('Package') {
+           
+            steps {
+                script {
+                    echo "Packaging the Job"
+                    sh 'mvn package'
                 }
                 
             }
