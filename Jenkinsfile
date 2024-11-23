@@ -6,12 +6,23 @@ pipeline {
         choice(name:'APPVERSION',choices:['1.1','1.2','1.3'])
 
     }
+    environment {
+        NEW_Version = '2.1'
+    }
 
     stages {
         stage('Build') {
+            input {
+                message "select the version"
+                ok "Version selected"
+                parameters{
+                    choices(name:'Build Version',choice:['1.1','1.2','1.3'])
+                }
+            }
             steps {
                 script {
                     echo "Building the Job"
+                    echo "Build the app with ${NEW_Version}"
                 }
                 
             }
@@ -28,6 +39,7 @@ pipeline {
             steps {
                 script {
                     echo "UnitTesting the Job"
+                    
                 }
                 
             }
@@ -35,11 +47,7 @@ pipeline {
             
         }
         stage('DEPLOY') {
-            when {
-                expression {
-                    BRANCH_NAME == 'b1'
-                }
-            }
+           
             steps {
                 script {
                     echo "Deploying the Job"
