@@ -21,9 +21,12 @@ pipeline {
             agent any
             steps {
                 script {
+                    sshagent(['Slave2']) {
                     echo "UnitTesting the Job"
-                    sh 'mvn test'
+                    sh "ssh ec2-user@172.16.0.22 'mvn test'"
+                    }
                 }
+
                 
             }
             post {
