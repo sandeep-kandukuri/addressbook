@@ -4,6 +4,9 @@ pipeline {
         jdk 'myjava'
         maven 'mymaven'
     }
+    environment {
+        TEST_SERVER = 'ec2-user@172.16.0.22'
+    }
     stages {
         stage('Compile') {
             agent any
@@ -23,7 +26,8 @@ pipeline {
                 script {
                     sshagent(['Slave2']) {
                     echo "UnitTesting the Job"
-                    sh "ssh -o StrictHostKeyChecking=no ec2-user@172.16.0.22 'mvn test'"
+                    sh "scp -o StrictHostKeyChecking=no server-script.sh ${TEST_SERVER}:/home/ec2-user"
+                    sh "ssh -o StrictHostKeyChecking=no ${TEST_SERVER} 'bash ~/server-script.sh'"
                     }
                 }
 
