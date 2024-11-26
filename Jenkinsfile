@@ -45,7 +45,7 @@ pipeline {
             agent {label 'linux_slave'}
             steps {
                 script {
-                    echo "Packaging the Job"
+                    echo "Packaging the Jobs"
                     sh 'mvn package'
                 }
                 
