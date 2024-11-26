@@ -5,6 +5,14 @@ tar -xvf apache-maven-3.9.4-bin.tar.gz
 sudo mv apache-maven-3.9.4 /usr/local/maven
 echo 'export PATH=/usr/local/maven/bin:$PATH' >> ~/.bash_profile
 source ~/.bash_profile
-git clone https://github.com/sandeep-kandukuri/addressbook.git
-cd /home/ec2-user/addressbook
+if [ -d "addressbook" ]
+then
+  echo "Already git repo exists"
+  cd /home/ec2-user/addressbook
+  git pull https://github.com/sandeep-kandukuri/addressbook.git 
+else
+  echo "there is no git repo"
+  git clone https://github.com/sandeep-kandukuri/addressbook.git
+  cd /home/ec2-user/addressbook
+fi
 mvn test
