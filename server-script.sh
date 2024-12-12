@@ -15,4 +15,4 @@ else
   git clone https://github.com/sandeep-kandukuri/addressbook.git
   cd /home/ec2-user/addressbook
 fi
-mvn test
+mvn package
