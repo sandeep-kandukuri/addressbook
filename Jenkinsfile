@@ -42,7 +42,7 @@ pipeline {
             
         }
         stage('Package+Bulid the docker image and push to dockerhub') {
-            agent none
+            agent any
             steps {
                 script {
                     sshagent(['Build']) {
