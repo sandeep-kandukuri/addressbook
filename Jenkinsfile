@@ -49,10 +49,10 @@ pipeline {
                         withCredentials([usernamePassword(credentialsId: 'dockerlogin', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
                             echo "Packaging the Jobs"
                             sh "scp -o StrictHostKeyChecking=no server-script.sh ${BUILD_SERVER}:/home/ec2-user"
-                            sh "ssh -o StrictHostKeyChecking=no ${BUILD_SERVR} 'bash ~/server-script.sh'"
-                            sh "ssh ${BUILD_SERVR} sudo docker build -t ${IMAGE_NAME} /home/ec2-user/addressbook"
-                            sh "ssh ${BUILD_SERVR} sudo docker login -u $USERNAME -p $PASSWORD"
-                            sh "ssh ${BUILD_SERVR} sudo docker push ${IMAGE_NAME}"
+                            sh "ssh -o StrictHostKeyChecking=no ${BUILD_SERVER} 'bash ~/server-script.sh'"
+                            sh "ssh ${BUILD_SERVER} sudo docker build -t ${IMAGE_NAME} /home/ec2-user/addressbook"
+                            sh "ssh ${BUILD_SERVER} sudo docker login -u $USERNAME -p $PASSWORD"
+                            sh "ssh ${BUILD_SERVER} sudo docker push ${IMAGE_NAME}"
                         }
                     }
                 
