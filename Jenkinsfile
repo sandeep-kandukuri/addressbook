@@ -7,6 +7,7 @@ pipeline {
     environment {
         BUILD_SERVER = 'ec2-user@10.0.0.75'
         IMAGE_NAME = 'sandeep888/repo1:$BUILD_NUMBER'
+        DOCKER_SERVER = 'ec2-user@10.0.0.223'
     }
     stages {
         stage('Compile') {
@@ -62,5 +63,20 @@ pipeline {
 
             
         }
+        stage('Running the container') {
+            agent any
+            steps {
+                script {
+                    sshagent(['Docker']) {
+                        withCredentials([usernamePassword(credentialsId: 'dockerlogin', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                            sh "ssh -o StrictHostKeyChecking=no ${DOCKER_SERVER} sudo yum install docker -y"
+                            sh "ssh ${DOCKER_SERVER} sudo systemctl start docker"
+                            sh "ssh ${DOCKER_SERVER} sudo docker login -u $USERNAME -p $PASSWORD"
+                            sh "ssh ${DOCKER_SERVER} sudo docker run -it -P ${IMAGE_NAME}"
+                        }
+                    }
+                }
+            }
+        }               
     }
 }
