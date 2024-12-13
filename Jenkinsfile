@@ -72,7 +72,7 @@ pipeline {
                             sh "ssh -o StrictHostKeyChecking=no ${DOCKER_SERVER} sudo yum install docker -y"
                             sh "ssh ${DOCKER_SERVER} sudo systemctl start docker"
                             sh "ssh ${DOCKER_SERVER} sudo docker login -u $USERNAME -p $PASSWORD"
-                            sh "ssh ${DOCKER_SERVER} sudo docker run -it -P ${IMAGE_NAME}"
+                            sh "ssh ${DOCKER_SERVER} sudo docker run -itd -P ${IMAGE_NAME}"
                         }
                     }
                 }
