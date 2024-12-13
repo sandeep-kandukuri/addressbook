@@ -5,7 +5,8 @@ pipeline {
         maven 'mymaven'
     }
     environment {
-        BUILD_SERVER = 'ec2-user@172.16.0.22'
+        BUILD_SERVER = 'ec2-user@10.0.0.75'
+        IMAGE_NAME = 'sandeep888/repo1:$BUILD_NUMBER'
     }
     stages {
         stage('Compile') {
@@ -21,13 +22,13 @@ pipeline {
             
         }
         stage('UnitTEST') {
-            agent {label 'linux_slave'}
+            agent any
             steps {
                 script {
-                    sshagent(['Slave2']) {
+                    
                     echo "UnitTesting the Job"
                     sh 'mvn test'
-                    }
+                    
                 }
 
                 
@@ -40,13 +41,20 @@ pipeline {
 
             
         }
-        stage('Package') {
-            sshagent(['Build']) {
+        stage('Package+Bulid the docker image and push to dockerhub') {
+            agent none
             steps {
                 script {
-                    echo "Packaging the Jobs"
-                    sh "scp -o StrictHostKeyChecking=no server-script.sh ${BUILD_SERVER}:/home/ec2-user"
-                    sh "ssh -o StrictHostKeyChecking=no ${BUILD_SERVR} 'bash ~/server-script.sh'"
+                    sshagent(['Build']) {
+                        withCredentials([usernamePassword(credentialsId: 'dockerlogin', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                            echo "Packaging the Jobs"
+                            sh "scp -o StrictHostKeyChecking=no server-script.sh ${BUILD_SERVER}:/home/ec2-user"
+                            sh "ssh -o StrictHostKeyChecking=no ${BUILD_SERVR} 'bash ~/server-script.sh'"
+                            sh "ssh ${BUILD_SERVR} sudo docker build -t ${IMAGE_NAME} /home/ec2-user/addressbook"
+                            sh "ssh ${BUILD_SERVR} sudo docker login -u $USERNAME -p $PASSWORD"
+                            sh "ssh ${BUILD_SERVR} sudo docker push ${IMAGE_NAME}"
+                        }
+                    }
                 
                 }
                 
